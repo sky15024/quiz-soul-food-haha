@@ -339,7 +339,23 @@ async function saveResultImage() {
 
     try {
         const captureArea = document.getElementById('capture-area');
-        const canvas = await html2canvas(captureArea, { backgroundColor: "#FCFAF6", scale: 2 });
+        
+        // 暫時修改樣式以確保完整截圖
+        const origHeight = captureArea.style.height;
+        const origOverflow = captureArea.style.overflow;
+        captureArea.style.height = 'max-content';
+        captureArea.style.overflow = 'visible';
+        
+        const canvas = await html2canvas(captureArea, { 
+            backgroundColor: "#FCFAF6", 
+            scale: 2,
+            useCORS: true,
+            scrollY: -window.scrollY
+        });
+        
+        // 恢復原狀
+        captureArea.style.height = origHeight;
+        captureArea.style.overflow = origOverflow;
 
         if (isMobile() || isLineIAB()) {
             const dataUrl = canvas.toDataURL('image/png');
